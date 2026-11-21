@@ -65,13 +65,12 @@ button:focus-visible{outline:3px solid var(--pink);outline-offset:3px}
 #ytwrap .yf iframe{width:112px;height:63px;display:block}
 #ytwrap p{margin:0;font:600 13px/1.3 Fredoka;color:var(--ink)}#ytwrap span{font-weight:500;color:var(--muted)}
 body{padding-bottom:110px}
-#mem{position:fixed;inset:0;pointer-events:none;z-index:4;overflow:hidden}
+#mem{position:fixed;inset:0;pointer-events:none;z-index:6;overflow:hidden}
 .pol{position:absolute;background:#fff;padding:8px 8px 26px;border:3px solid #4b3a63;border-radius:6px;box-shadow:6px 6px 0 rgba(75,58,99,.25);
- width:clamp(130px,34vw,230px);transform:rotate(var(--r)) scale(.3);opacity:0;transition:transform .45s cubic-bezier(.3,1.6,.5,1),opacity .35s}
+ transform:rotate(var(--r)) scale(.3);opacity:0;transition:transform .45s cubic-bezier(.3,1.6,.5,1),opacity .35s}
 .pol.in{transform:rotate(var(--r)) scale(1);opacity:1}
 .pol.out{transform:rotate(var(--r)) scale(.85) translateY(12px);opacity:0;transition:transform .5s,opacity .5s}
-.pol img,.pol video{display:block;width:100%;aspect-ratio:1;object-fit:cover;border-radius:2px;background:#eee}
-.pol.vid video{aspect-ratio:16/9}
+.pol img,.pol video{display:block;width:100%;height:auto;border-radius:2px;background:#eee}
 .pol::before{content:"";position:absolute;left:50%;top:-12px;width:64px;height:20px;transform:translateX(-50%) rotate(-4deg);background:repeating-linear-gradient(45deg,#ffb3cf 0 8px,#ffd6e5 8px 16px);opacity:.9}
 .pol i{position:absolute;bottom:4px;right:8px;width:16px;height:15px}
 @media(prefers-reduced-motion:reduce){.pol,.pol.out{transition:opacity .3s}}
@@ -145,15 +144,15 @@ async function play(){
 }
 
 /* memories: photos + clip pop up at random spots */
-const MEM=['p1','p2','p3','p4','p5','p7','p8','p9','p10','p11','p12','clip'];
+const RATIO={"p1": 0.75, "p2": 1.328, "p3": 0.667, "p4": 1.333, "p5": 0.75, "p7": 0.75, "p8": 0.786, "p9": 0.75, "p10": 0.45, "p11": 0.75, "p12": 1.333, "clip": 0.562};const MEM=Object.keys(RATIO);
 const mem=document.getElementById('mem');let memQ=[],memOn=false,live=0;
 function nextMem(){if(!memQ.length){memQ=MEM.slice().sort(()=>Math.random()-.5)}return memQ.pop()}
 function popMem(){if(live>=2)return;const k=nextMem(),isV=k==='clip';const d=document.createElement('div');d.className='pol'+(isV?' vid':'');
- d.style.setProperty('--r',(Math.random()*24-12).toFixed(1)+'deg');
- d.innerHTML=(isV?'<video src="media/clip.mp4" poster="media/clip.jpg" muted autoplay loop playsinline></video>':`<img src="media/${k}.jpg" alt="">`)+`<i><svg viewBox="0 0 70 64"><path d="${H}" fill="#ff8fb8" stroke="#4b3a63" stroke-width="6"/></svg></i>`;
- const vw=innerWidth,vh=innerHeight,w=Math.min(230,Math.max(130,vw*.34)),h=w*(isV?.75:1.2);
+ d.style.setProperty('--r',(Math.random()*14-7).toFixed(1)+'deg');
+ d.innerHTML=(isV?'<video src="media/clip.mp4" poster="media/clip.jpg" muted autoplay loop playsinline style="aspect-ratio:1/${RATIO.clip}"></video>':`<img src="media/${k}.jpg" alt="" style="aspect-ratio:1/${RATIO[k]}">`)+`<i><svg viewBox="0 0 70 64"><path d="${H}" fill="#ff8fb8" stroke="#4b3a63" stroke-width="6"/></svg></i>`;
+ const vw=innerWidth,vh=innerHeight,rt=RATIO[k],wide=rt<1,w=wide?Math.min(320,vw*.7):Math.min(210,vw*.42),h=w*rt+40;d.style.width=w+'px';
  let x;const side=Math.random()<.5;if(vw>1100){const gap=(vw-660)/2;x=side?Math.random()*Math.max(10,gap-w-10):vw-gap+10+Math.random()*Math.max(10,gap-w-20)}else{x=Math.random()*(vw-w-10)+5}
- d.style.left=Math.max(4,x)+'px';d.style.top=(Math.random()*(vh-h-30)+15)+'px';
+ const pad=18;x=Math.min(Math.max(pad,x),vw-w-pad-8);d.style.left=x+'px';d.style.top=Math.min(Math.max(pad,Math.random()*(vh-h-2*pad)+pad),Math.max(pad,vh-h-pad))+'px';
  mem.appendChild(d);live++;requestAnimationFrame(()=>requestAnimationFrame(()=>d.classList.add('in')));
  setTimeout(()=>{d.classList.add('out');setTimeout(()=>{d.remove();live--},550)},isV?8000:3800)}
 function startMemories(){if(memOn)return;memOn=true;popMem();setInterval(popMem,2300)}

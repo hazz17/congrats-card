@@ -74,6 +74,11 @@ body{padding-bottom:110px}
 .pol::before{content:"";position:absolute;left:50%;top:-12px;width:64px;height:20px;transform:translateX(-50%) rotate(-4deg);background:repeating-linear-gradient(45deg,#ffb3cf 0 8px,#ffd6e5 8px 16px);opacity:.9}
 .pol i{position:absolute;bottom:4px;right:8px;width:16px;height:15px}
 @media(prefers-reduced-motion:reduce){.pol,.pol.out{transition:opacity .3s}}
+.reveal{display:inline-flex;flex-direction:column;align-items:center;gap:2px;padding:8px 22px 6px;border-radius:18px;font:600 22px Fredoka;box-shadow:4px 4px 0 var(--shadow)}
+.reveal .blur{filter:blur(7px);user-select:none;color:var(--ink)}
+.reveal small{font:500 12px "JetBrains Mono",monospace;color:var(--pink)}
+.out .sig.shown{animation:popin .5s cubic-bezier(.3,1.6,.5,1)}
+@keyframes popin{from{transform:scale(.4);opacity:0}}
 </style></head><body>
 <div id="ytwrap"><div class="yf"><div id="ytp"></div></div><p>♪ Just The Way You Are<br><span>violin cover by Daniel Jang</span></p></div>
 <div id="sky" aria-hidden="true"></div>
@@ -136,6 +141,9 @@ async function play(){
   const p=document.createElement('p');p.className=l.c;out.appendChild(p);
   const s=document.createElement('span');p.appendChild(s);
   const caret=document.createElement('span');caret.className='caret';p.appendChild(caret);
+  if(l.c==='sig'){caret.remove();const b=document.createElement('button');b.type='button';b.className='reveal';b.setAttribute('aria-label','Tap to see who sent this');
+   b.innerHTML='<span class="blur">- Haz -</span><small>♡ tap to reveal ♡</small>';
+   b.addEventListener('click',()=>{p.textContent='- Haz -';p.classList.add('shown');burst(26)},{once:true});p.appendChild(b);await wait(260);continue}
   await type(s,l.t,l.c==='big'?70:38,id);
   if(l.tail){const tx=s.textContent.trimEnd(),k=tx.lastIndexOf(' ')+1;s.textContent=tx.slice(0,k);const nw=document.createElement('span');nw.style.whiteSpace='nowrap';nw.textContent=tx.slice(k)+' ';nw.insertAdjacentHTML('beforeend',l.tail);s.appendChild(nw);burst(l.c==='big'?14:8)}
   caret.remove();await wait(l.t?260:120);

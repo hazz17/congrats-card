@@ -144,7 +144,7 @@ async function play(){
 }
 
 /* memories: photos + clip pop up scattered, never overlapping each other (or the card on wide screens) */
-const RATIO={"p1": 0.75, "p2": 1.328, "p3": 0.667, "p4": 1.333, "p5": 0.75, "p7": 0.75, "p8": 0.786, "p9": 0.75, "p10": 0.45, "p11": 0.75, "p12": 1.333, "clip": 0.562};const MEM=Object.keys(RATIO);
+const RATIO={"clip": 0.562, "clip2": 1.778, "clip3": 0.562, "clip4": 0.562, "clip5": 1.778, "p1": 0.75, "p10": 0.45, "p11": 0.75, "p12": 1.333, "p13": 0.667, "p14": 0.75, "p15": 0.75, "p16": 1.333, "p17": 0.75, "p18": 1.333, "p2": 1.328, "p3": 0.667, "p4": 1.333, "p5": 0.75, "p7": 0.75, "p8": 0.786, "p9": 0.75};const DUR={"clip": 7.8, "clip2": 9.2, "clip3": 35.0, "clip4": 4.2, "clip5": 7.3};const MEM=Object.keys(RATIO);
 const mem=document.getElementById('mem');let memQ=[],memOn=false;const boxes=new Set();
 function nextMem(){if(!memQ.length){memQ=MEM.slice().sort(()=>Math.random()-.5)}return memQ.pop()}
 const hit=(p,q)=>p.l<q.r&&p.r>q.l&&p.t<q.b&&p.b>q.t;
@@ -152,7 +152,7 @@ function popMem(){
  const vw=innerWidth,vh=innerHeight,small=vw<700,maxLive=small?2:vw<1200?3:5;
  if(boxes.size>=maxLive)return;
  const used=new Set([...boxes].map(b=>b.k));let k=nextMem(),tries=0;while(used.has(k)&&tries++<MEM.length)k=nextMem();
- const isV=k==='clip',rt=RATIO[k],wide=rt<1;
+ const isV=k.startsWith('clip'),rt=RATIO[k],wide=rt<1;
  const w=small?(wide?Math.min(230,vw*.6):Math.min(150,vw*.4)):(wide?Math.min(280,vw*.24):Math.min(185,vw*.16));
  const h=w*rt+42,m=Math.max(w,h)*.08+14,pad=14;
  const st=document.querySelector('.stage').getBoundingClientRect(),card={l:st.left-20,r:st.right+24,t:st.top-120,b:st.bottom+20};
@@ -166,9 +166,9 @@ function popMem(){
  if(!spot)return;
  const d=document.createElement('div');d.className='pol'+(isV?' vid':'');
  d.style.setProperty('--r',(Math.random()*12-6).toFixed(1)+'deg');d.style.width=w+'px';d.style.left=spot.x+'px';d.style.top=spot.y+'px';
- d.innerHTML=(isV?`<video src="media/clip.mp4" poster="media/clip.jpg" muted autoplay loop playsinline style="aspect-ratio:1/${rt}"></video>`:`<img src="media/${k}.jpg" alt="" style="aspect-ratio:1/${rt}">`)+`<i><svg viewBox="0 0 70 64"><path d="${H}" fill="#ff8fb8" stroke="#4b3a63" stroke-width="6"/></svg></i>`;
- mem.appendChild(d);boxes.add(spot.box);requestAnimationFrame(()=>requestAnimationFrame(()=>d.classList.add('in')));
- setTimeout(()=>{d.classList.add('out');setTimeout(()=>{d.remove();boxes.delete(spot.box)},550)},isV?8500:4200+Math.random()*1500)}
+ d.innerHTML=(isV?`<video src="media/${k}.mp4" poster="media/${k}.jpg" muted autoplay loop playsinline style="aspect-ratio:1/${rt}"></video>`:`<img src="media/${k}.jpg" alt="" style="aspect-ratio:1/${rt}">`)+`<i><svg viewBox="0 0 70 64"><path d="${H}" fill="#ff8fb8" stroke="#4b3a63" stroke-width="6"/></svg></i>`;
+ mem.appendChild(d);if(isV&&DUR[k]>11){const v=d.querySelector('video');v.addEventListener('loadedmetadata',()=>{v.currentTime=Math.random()*(DUR[k]-10)},{once:true})}boxes.add(spot.box);requestAnimationFrame(()=>requestAnimationFrame(()=>d.classList.add('in')));
+ setTimeout(()=>{d.classList.add('out');setTimeout(()=>{d.remove();boxes.delete(spot.box)},550)},isV?Math.min(DUR[k],10)*1000+500:4200+Math.random()*1500)}
 function startMemories(){if(memOn)return;memOn=true;popMem();setInterval(popMem,900)}
 const sky=document.getElementById('sky');const cols=['#ff8fb8','#c9b3ff','#ffd166','#8fdcb0','#7ec4f5'];
 function burst(n){if(reduce)return;for(let i=0;i<n;i++){const d=document.createElement('div');d.className='fh';

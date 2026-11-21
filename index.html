@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Congratulations ♡</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+/* VOICE: tender, playful, sweet — a little gift from Haz
+   IDEA: the congratulations.cpp program actually running, its output appearing like a love note
+   PICTURE: sticker-style code window with a star graduate perched on top, output typed out centered
+   COLOUR and TYPE: bubblegum pink ground, lavender bar, cream window, plum ink; Fredoka + JetBrains Mono
+   LAYOUT: one centered object on one screen, hearts drifting behind */
+:root{color-scheme:light dark;
+ --bg:light-dark(#ffe6f0,#2a1f36);--dot:light-dark(#ffc9de,#3d2d4d);
+ --win:light-dark(#fffaf4,#1f1829);--bar:light-dark(#e3d6ff,#4a3a66);
+ --ink:light-dark(#4b3a63,#f4ecff);--line:light-dark(#4b3a63,#130d1a);
+ --shadow:light-dark(#c9b3ff,#ff8fb8);--pink:light-dark(#e0498f,#ff9fc8);
+ --muted:light-dark(#a796bf,#9c8bb5);--blue:light-dark(#3d8fd6,#8cc7ff)}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;min-height:100vh;min-height:100dvh;background:var(--bg);color:var(--ink);
+ background-image:radial-gradient(var(--dot) 2.5px,transparent 3px);background-size:34px 34px;
+ font:16px/1.55 "Fredoka",system-ui,sans-serif;overflow-x:clip;display:grid;place-items:center;padding:110px 16px 40px}
+#sky{position:fixed;inset:0;pointer-events:none;overflow:hidden}
+.fh{position:absolute;bottom:-60px;animation:rise linear forwards}
+@keyframes rise{to{transform:translateY(-115vh) rotate(var(--r))}}
+.stage{position:relative;width:min(640px,100%)}
+.star{position:absolute;right:-8px;top:-118px;width:150px;z-index:2;animation:bob 3s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-8px) rotate(3deg)}}
+.win{position:relative;background:var(--win);border:4px solid var(--line);border-radius:30px;box-shadow:12px 12px 0 var(--shadow);overflow:hidden}
+.bar{display:flex;align-items:center;gap:10px;padding:14px 18px;background:var(--bar);border-bottom:4px solid var(--line)}
+.d{width:18px;height:18px;border-radius:50%;border:3px solid var(--line);flex:none}
+.tab{margin-left:10px;display:flex;align-items:center;gap:8px;background:var(--win);border:3px solid var(--line);border-radius:99px;padding:4px 14px;font:700 14px "JetBrains Mono",monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cpp{flex:none;background:#7ec4f5;color:#fff;border:2px solid var(--line);border-radius:8px;padding:0 6px;font:600 13px Fredoka}
+.term{padding:22px clamp(16px,4vw,34px) 30px;font:500 clamp(14px,3.6vw,17px)/1.7 "JetBrains Mono",monospace;min-height:380px}
+.cmd{color:var(--muted);margin:0 0 18px}.cmd b{color:var(--blue)}
+.out{text-align:center;color:var(--pink)}
+.out p{margin:0;min-height:1.7em;text-wrap:balance}
+.out .big{font:600 clamp(28px,7vw,40px)/1.15 Fredoka;color:var(--pink);margin-bottom:6px}
+.out .deg{color:var(--ink);font-weight:700;text-wrap:balance}
+.out .sig{font:600 22px Fredoka;color:var(--ink);margin-top:6px}
+.caret{display:inline-block;width:.55em;height:1.1em;background:var(--pink);vertical-align:-.18em;margin-left:2px;animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.ic{display:inline-block;width:1.25em;height:1.15em;vertical-align:-.2em}
+.done{display:flex;justify-content:center;gap:12px;margin-top:22px;opacity:0;transition:opacity .6s}
+.done.on{opacity:1}
+button{font:600 16px Fredoka;color:var(--ink);background:var(--win);border:3px solid var(--line);border-radius:99px;padding:10px 22px;min-height:44px;cursor:pointer;box-shadow:4px 4px 0 var(--shadow)}
+button:active{transform:translate(3px,3px);box-shadow:1px 1px 0 var(--shadow)}
+button:focus-visible{outline:3px solid var(--pink);outline-offset:3px}
+.ret{color:var(--muted);text-align:left;margin-top:16px;opacity:0;transition:opacity .4s}.ret.on{opacity:1}
+@media(max-width:600px){.tab{font-size:12px;padding:4px 10px;margin-left:4px}.tab .cpp{display:none}.star{width:118px;top:-96px}.term{min-height:340px}}
+@media(prefers-reduced-motion:reduce){.star,.caret{animation:none}.fh{display:none}}
+.mus{margin-left:auto;flex:none;width:44px;height:44px;padding:0;border-radius:50%;font-size:20px;line-height:1;box-shadow:3px 3px 0 var(--shadow)}
+.mus.off{opacity:.55}
+.gate{position:fixed;inset:0;z-index:10;display:grid;place-items:center;background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(3px);transition:opacity .5s}
+.gate.hide{opacity:0;pointer-events:none}
+.gate button{font-size:22px;padding:18px 34px;display:flex;align-items:center;gap:12px;box-shadow:6px 6px 0 var(--shadow);animation:pulse 1.6s ease-in-out infinite}
+.gate small{display:block;text-align:center;margin-top:14px;color:var(--muted);font:500 14px "JetBrains Mono",monospace}
+@keyframes pulse{50%{transform:scale(1.05)}}
+@media(prefers-reduced-motion:reduce){.gate button{animation:none}}
+</style></head><body>
+<div id="ytwrap" aria-hidden="true" style="position:fixed;left:-9999px;top:0;width:200px;height:120px;overflow:hidden"><div id="ytp"></div></div>
+<div id="sky" aria-hidden="true"></div>
+<div class="gate" id="gate"><div><button id="open" type="button"><svg width="34" height="31" viewBox="0 0 70 64"><path d="M35 58 C14 44 4 32 4 19 C4 9 12 3 20 3 C27 3 32 8 35 14 C38 8 43 3 50 3 C58 3 66 9 66 19 C66 32 56 44 35 58Z" fill="#ff8fb8" stroke="#4b3a63" stroke-width="5" stroke-linejoin="round"/></svg>Open your card</button><small>sound on ♪ violin: Daniel Jang</small></div></div>
+<main class="stage">
+  <svg class="star" viewBox="0 0 300 300" aria-hidden="true">
+    <path d="M150 105 L178 160 L238 168 L194 210 L206 270 L150 242 L94 270 L106 210 L62 168 L122 160 Z" fill="#ffd166" stroke="#4b3a63" stroke-width="7" stroke-linejoin="round"/>
+    <path d="M132 192 Q138 184 144 192M158 192 Q164 184 170 192" fill="none" stroke="#4b3a63" stroke-width="5" stroke-linecap="round"/>
+    <path d="M140 208 Q151 220 162 208" fill="#ff8fb8" stroke="#4b3a63" stroke-width="4" stroke-linejoin="round"/>
+    <ellipse cx="120" cy="206" rx="10" ry="6" fill="#ff9fc4"/><ellipse cx="182" cy="206" rx="10" ry="6" fill="#ff9fc4"/>
+    <g transform="translate(150 92) rotate(-12)">
+      <path d="M-30 18 L-28 52 C-10 62 22 62 40 52 L42 18" fill="#5b4a78" stroke="#4b3a63" stroke-width="6" stroke-linejoin="round"/>
+      <path d="M-86 10 L6 -26 L98 10 L6 46 Z" fill="#6e5a91" stroke="#4b3a63" stroke-width="6" stroke-linejoin="round"/>
+      <circle cx="6" cy="10" r="7" fill="#ffd166" stroke="#4b3a63" stroke-width="3"/>
+      <path d="M6 10 L78 26 L78 70" fill="none" stroke="#ffd166" stroke-width="5" stroke-linecap="round"/>
+      <path d="M70 70 L86 70 L90 100 L66 100 Z" fill="#ffd166" stroke="#4b3a63" stroke-width="4" stroke-linejoin="round"/>
+    </g>
+  </svg>
+  <div class="win">
+    <div class="bar">
+      <span class="d" style="background:#ff8fa3"></span><span class="d" style="background:#ffd166"></span><span class="d" style="background:#8fdcb0"></span>
+      <span class="tab"><span class="cpp">C++</span>congratulations.cpp</span>
+      <button class="mus" id="mus" type="button" aria-label="Music on or off">♪</button>
+    </div>
+    <div class="term" aria-live="polite">
+      <p class="cmd"><b>~ $</b> <span id="cmd"></span></p>
+      <div class="out" id="out"></div>
+      <p class="ret" id="ret">Process exited with code 0 ♡</p>
+      <div class="done" id="done"><button id="again" type="button">Run again</button><button id="love" type="button">More hearts</button></div>
+    </div>
+  </div>
+</main>
+<script>
+{
+const H='M35 58 C14 44 4 32 4 19 C4 9 12 3 20 3 C27 3 32 8 35 14 C38 8 43 3 50 3 C58 3 66 9 66 19 C66 32 56 44 35 58Z';
+const heart=(f)=>`<svg class="ic" viewBox="0 0 70 64"><path d="${H}" fill="${f}" stroke="#4b3a63" stroke-width="5" stroke-linejoin="round"/><path d="M21 26 Q25 21 29 26M41 26 Q45 21 49 26" fill="none" stroke="#4b3a63" stroke-width="3.4" stroke-linecap="round"/><path d="M30 33 Q35 38 40 33" fill="none" stroke="#4b3a63" stroke-width="3.2" stroke-linecap="round"/><ellipse cx="18" cy="34" rx="5" ry="3" fill="#ff5c9a" opacity=".6"/><ellipse cx="52" cy="34" rx="5" ry="3" fill="#ff5c9a" opacity=".6"/></svg>`;
+const spark=`<svg class="ic" viewBox="0 0 50 50"><path d="M25 2 C27 18 32 23 48 25 C32 27 27 32 25 48 C23 32 18 27 2 25 C18 23 23 18 25 2Z" fill="#ffd166" stroke="#4b3a63" stroke-width="4.5" stroke-linejoin="round"/></svg>`;
+const lines=[
+ {c:'big',t:'Congratulations! ',tail:heart('#ff8fb8')},
+ {c:'deg',t:'Bachelor of Computer Science with Honours (Data Science)'},
+ {c:'',t:''},
+ {c:'',t:'You did it! So proud of you.'},
+ {c:'',t:''},
+ {c:'',t:'You deserve every beautiful thing coming your way ',tail:heart('#ff8fb8')+heart('#c9b3ff')+spark},
+ {c:'',t:''},
+ {c:'sig',t:'- Haz -'}
+];
+const out=document.getElementById('out'),cmd=document.getElementById('cmd'),done=document.getElementById('done'),ret=document.getElementById('ret');
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const wait=ms=>new Promise(r=>setTimeout(r,reduce?0:ms));
+let run=0;
+async function type(el,text,speed,id){for(let i=0;i<text.length;i++){if(id!==run)return;el.textContent=text.slice(0,i+1);await wait(speed)}}
+async function play(){
+ const id=++run;out.innerHTML='';cmd.textContent='';done.classList.remove('on');ret.classList.remove('on');
+ await type(cmd,'g++ congratulations.cpp -o congrats && ./congrats',28,id);
+ await wait(450);
+ for(const l of lines){
+  if(id!==run)return;
+  const p=document.createElement('p');p.className=l.c;out.appendChild(p);
+  const s=document.createElement('span');p.appendChild(s);
+  const caret=document.createElement('span');caret.className='caret';p.appendChild(caret);
+  await type(s,l.t,l.c==='big'?70:38,id);
+  if(l.tail){const tx=s.textContent.trimEnd(),k=tx.lastIndexOf(' ')+1;s.textContent=tx.slice(0,k);const nw=document.createElement('span');nw.style.whiteSpace='nowrap';nw.textContent=tx.slice(k)+' ';nw.insertAdjacentHTML('beforeend',l.tail);s.appendChild(nw);burst(l.c==='big'?14:8)}
+  caret.remove();await wait(l.t?260:120);
+ }
+ ret.classList.add('on');done.classList.add('on');burst(22);
+}
+const sky=document.getElementById('sky');const cols=['#ff8fb8','#c9b3ff','#ffd166','#8fdcb0','#7ec4f5'];
+function burst(n){if(reduce)return;for(let i=0;i<n;i++){const d=document.createElement('div');d.className='fh';
+ const sz=18+Math.random()*26;d.style.left=Math.random()*100+'vw';d.style.width=sz+'px';d.style.setProperty('--r',(Math.random()*80-40)+'deg');
+ d.style.animationDuration=(5+Math.random()*5)+'s';d.style.animationDelay=(Math.random()*1.2)+'s';
+ d.innerHTML=Math.random()<.8?`<svg viewBox="0 0 70 64"><path d="${H}" fill="${cols[i%cols.length]}" stroke="#4b3a63" stroke-width="5" stroke-linejoin="round"/></svg>`:spark;
+ sky.appendChild(d);setTimeout(()=>d.remove(),12000)}}
+document.getElementById('again').addEventListener('click',play);
+document.getElementById('love').addEventListener('click',()=>burst(30));
+setInterval(()=>burst(2),2500);
+
+/* original music-box waltz by Claude, 3/4 */
+const NOTE=n=>{const m={C:0,D:2,E:4,F:5,G:7,A:9,B:11}[n[0]];return 440*2**((m+12*(+n[1]+1)-69)/12)};
+const mel=[['E5',2],['G5',1],['C6',2],['B5',1],['A5',1],['G5',1],['E5',1],['G5',3],
+ ['F5',2],['A5',1],['D6',2],['C6',1],['B5',1],['A5',1],['F5',1],['G5',3],
+ ['E5',2],['G5',1],['C6',2],['E6',1],['D6',1],['C6',1],['A5',1],['G5',2],['E5',1],
+ ['F5',1],['A5',1],['D6',1],['C6',1],['B5',1],['D6',1],['C6',3],[null,3]];
+const ch=['C','A','F','G','F','D','G','G','C','A','F','C','D','G','C','C'];
+const tri={C:['C3','G3','E4'],A:['A2','E3','C4'],F:['F2','C3','A3'],G:['G2','D3','B3'],D:['D3','A3','F4']};
+const BEAT=60/92,LOOP=48*BEAT;let ac=null,master=null,on=true,next=0,timer=null;
+function bell(f,t,g,len){const o=ac.createOscillator(),o2=ac.createOscillator(),v=ac.createGain(),v2=ac.createGain();
+ o.type='sine';o.frequency.value=f;o2.type='sine';o2.frequency.value=f*4.01;
+ v.gain.setValueAtTime(0,t);v.gain.linearRampToValueAtTime(g,t+.006);v.gain.exponentialRampToValueAtTime(.0008,t+len);
+ v2.gain.setValueAtTime(0,t);v2.gain.linearRampToValueAtTime(g*.22,t+.004);v2.gain.exponentialRampToValueAtTime(.0005,t+len*.35);
+ o.connect(v);o2.connect(v2);v.connect(master);v2.connect(master);o.start(t);o2.start(t);o.stop(t+len+.05);o2.stop(t+len+.05)}
+function loopAt(t0){let t=t0;for(const [n,b] of mel){if(n)bell(NOTE(n),t,.16,1.8);t+=b*BEAT}
+ ch.forEach((c,i)=>tri[c].forEach((n,k)=>bell(NOTE(n),t0+(i*3+k)*BEAT,.07,1.4)))}
+function sched(){while(next<ac.currentTime+1){loopAt(next);next+=LOOP}}
+function boxStart(){try{if(!ac){ac=new (window.AudioContext||window.webkitAudioContext)();master=ac.createGain();master.gain.value=.9;
+ const lp=ac.createBiquadFilter();lp.type='lowpass';lp.frequency.value=5200;master.disconnect();master.connect(lp);lp.connect(ac.destination);next=ac.currentTime+.1}
+ ac.resume();master.gain.setTargetAtTime(.9,ac.currentTime,.05);if(!timer){sched();timer=setInterval(sched,400)}}catch(e){}}
+
+function boxStop(){if(ac)master.gain.setTargetAtTime(0,ac.currentTime,.08)}
+
+/* YouTube song: Daniel Jang - Just The Way You Are (violin cover); music box is the fallback */
+let yt=null,ytOk=false,ytFail=false,useBox=false;
+const tag=document.createElement('script');tag.src='https://www.youtube.com/iframe_api';document.head.appendChild(tag);
+window.onYouTubeIframeAPIReady=()=>{yt=new YT.Player('ytp',{videoId:'iLRbqIPaVJw',width:200,height:120,
+ playerVars:{playsinline:1,controls:0,disablekb:1,rel:0,loop:1,playlist:'iLRbqIPaVJw'},
+ events:{onReady:()=>{ytOk=true;yt.setVolume(85)},
+  onStateChange:e=>{if(e.data===0){yt.seekTo(0);yt.playVideo()}},
+  onError:()=>{ytFail=true;if(on&&!useBox){useBox=true;boxStart()}}}})};
+setTimeout(()=>{if(!ytOk)ytFail=true},8000);
+function startMusic(){if(ytOk&&!ytFail){yt.unMute();yt.playVideo();setTimeout(()=>{try{if(yt.getPlayerState()!==1&&yt.getPlayerState()!==3){useBox=true;boxStart()}}catch(e){}},2500)}else{useBox=true;boxStart()}}
+function stopMusic(){try{if(yt&&ytOk)yt.pauseVideo()}catch(e){}if(useBox)boxStop()}
+const mus=document.getElementById('mus');
+mus.addEventListener('click',()=>{on=!on;mus.classList.toggle('off',!on);on?startMusic():stopMusic()});
+document.getElementById('open').addEventListener('click',()=>{document.getElementById('gate').classList.add('hide');startMusic();play()});
+
+}
+</script>
+</body></html>

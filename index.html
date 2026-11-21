@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"><head>
 <meta charset="utf-8">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Congratulations ♡</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -59,10 +60,15 @@ button:focus-visible{outline:3px solid var(--pink);outline-offset:3px}
 .gate small{display:block;text-align:center;margin-top:14px;color:var(--muted);font:500 14px "JetBrains Mono",monospace}
 @keyframes pulse{50%{transform:scale(1.05)}}
 @media(prefers-reduced-motion:reduce){.gate button{animation:none}}
+#ytwrap{position:fixed;left:14px;bottom:14px;z-index:5;display:flex;align-items:center;gap:10px;background:var(--win);border:3px solid var(--line);border-radius:18px;padding:6px 12px 6px 6px;box-shadow:5px 5px 0 var(--shadow);max-width:calc(100vw - 28px)}
+#ytwrap .yf{width:112px;height:63px;border-radius:12px;overflow:hidden;flex:none;background:#000}
+#ytwrap .yf iframe{width:112px;height:63px;display:block}
+#ytwrap p{margin:0;font:600 13px/1.3 Fredoka;color:var(--ink)}#ytwrap span{font-weight:500;color:var(--muted)}
+body{padding-bottom:110px}
 </style></head><body>
-<div id="ytwrap" aria-hidden="true" style="position:fixed;left:-9999px;top:0;width:200px;height:120px;overflow:hidden"><div id="ytp"></div></div>
+<div id="ytwrap"><div class="yf"><div id="ytp"></div></div><p>♪ Just The Way You Are<br><span>violin cover by Daniel Jang</span></p></div>
 <div id="sky" aria-hidden="true"></div>
-<div class="gate" id="gate"><div><button id="open" type="button"><svg width="34" height="31" viewBox="0 0 70 64"><path d="M35 58 C14 44 4 32 4 19 C4 9 12 3 20 3 C27 3 32 8 35 14 C38 8 43 3 50 3 C58 3 66 9 66 19 C66 32 56 44 35 58Z" fill="#ff8fb8" stroke="#4b3a63" stroke-width="5" stroke-linejoin="round"/></svg>Open your card</button><small>sound on ♪ violin: Daniel Jang</small></div></div>
+<div class="gate" id="gate"><div><button id="open" type="button"><svg width="34" height="31" viewBox="0 0 70 64"><path d="M35 58 C14 44 4 32 4 19 C4 9 12 3 20 3 C27 3 32 8 35 14 C38 8 43 3 50 3 C58 3 66 9 66 19 C66 32 56 44 35 58Z" fill="#ff8fb8" stroke="#4b3a63" stroke-width="5" stroke-linejoin="round"/></svg><span id="openTxt">Open your card</span></button><small>sound on ♪ violin: Daniel Jang</small></div></div>
 <main class="stage">
   <svg class="star" viewBox="0 0 300 300" aria-hidden="true">
     <path d="M150 105 L178 160 L238 168 L194 210 L206 270 L150 242 L94 270 L106 210 L62 168 L122 160 Z" fill="#ffd166" stroke="#4b3a63" stroke-width="7" stroke-linejoin="round"/>
@@ -159,20 +165,22 @@ function boxStart(){try{if(!ac){ac=new (window.AudioContext||window.webkitAudioC
 
 function boxStop(){if(ac)master.gain.setTargetAtTime(0,ac.currentTime,.08)}
 
-/* YouTube song: Daniel Jang - Just The Way You Are (violin cover); music box is the fallback */
-let yt=null,ytOk=false,ytFail=false,useBox=false;
+/* YouTube song: Daniel Jang - Just The Way You Are (violin cover); music box only if YouTube errors */
+let yt=null,ytOk=false,useBox=false;const openBtn=document.getElementById('open');
 const tag=document.createElement('script');tag.src='https://www.youtube.com/iframe_api';document.head.appendChild(tag);
-window.onYouTubeIframeAPIReady=()=>{yt=new YT.Player('ytp',{videoId:'iLRbqIPaVJw',width:200,height:120,
- playerVars:{playsinline:1,controls:0,disablekb:1,rel:0,loop:1,playlist:'iLRbqIPaVJw'},
- events:{onReady:()=>{ytOk=true;yt.setVolume(85)},
+window.onYouTubeIframeAPIReady=()=>{yt=new YT.Player('ytp',{videoId:'iLRbqIPaVJw',width:112,height:63,
+ playerVars:{playsinline:1,controls:1,rel:0,modestbranding:1,origin:location.origin},
+ events:{onReady:()=>{ytOk=true;yt.setVolume(90);openBtn.disabled=false;openTxt.textContent='Open your card'},
   onStateChange:e=>{if(e.data===0){yt.seekTo(0);yt.playVideo()}},
-  onError:()=>{ytFail=true;if(on&&!useBox){useBox=true;boxStart()}}}})};
-setTimeout(()=>{if(!ytOk)ytFail=true},8000);
-function startMusic(){if(ytOk&&!ytFail){yt.unMute();yt.playVideo();setTimeout(()=>{try{if(yt.getPlayerState()!==1&&yt.getPlayerState()!==3){useBox=true;boxStart()}}catch(e){}},2500)}else{useBox=true;boxStart()}}
+  onError:()=>{useBox=true;openBtn.disabled=false;openTxt.textContent='Open your card';if(on&&opened)boxStart()}}})};
+let opened=false;const openTxt=document.getElementById('openTxt');
+openBtn.disabled=true;openTxt.textContent='Loading ♪';
+setTimeout(()=>{if(!ytOk){openBtn.disabled=false;openTxt.textContent='Open your card'}},7000);
+function startMusic(){if(ytOk&&!useBox){try{yt.unMute();yt.playVideo()}catch(e){}}else{useBox=true;boxStart()}}
 function stopMusic(){try{if(yt&&ytOk)yt.pauseVideo()}catch(e){}if(useBox)boxStop()}
 const mus=document.getElementById('mus');
 mus.addEventListener('click',()=>{on=!on;mus.classList.toggle('off',!on);on?startMusic():stopMusic()});
-document.getElementById('open').addEventListener('click',()=>{document.getElementById('gate').classList.add('hide');startMusic();play()});
+document.getElementById('open').addEventListener('click',()=>{opened=true;document.getElementById('gate').classList.add('hide');startMusic();play()});
 
 }
 </script>

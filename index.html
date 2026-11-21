@@ -156,11 +156,13 @@ function popMem(){
  const w=small?(wide?Math.min(230,vw*.6):Math.min(150,vw*.4)):(wide?Math.min(280,vw*.24):Math.min(185,vw*.16));
  const h=w*rt+42,m=Math.max(w,h)*.08+14,pad=14;
  const st=document.querySelector('.stage').getBoundingClientRect(),card={l:st.left-20,r:st.right+24,t:st.top-120,b:st.bottom+20};
+ const yb=document.getElementById('ytwrap').getBoundingClientRect(),pl={l:yb.left-12,r:yb.right+16,t:yb.top-12,b:yb.bottom+12};
  let spot=null;
  for(let i=0;i<60&&!spot;i++){
   const x=pad+Math.random()*Math.max(1,vw-w-2*pad-8),y=pad+Math.random()*Math.max(1,vh-h-2*pad);
   const r={l:x-m,r:x+w+m,t:y-m,b:y+h+m};
   if(!small&&hit(r,card))continue;
+  if(hit(r,pl))continue;
   if([...boxes].some(o=>hit(r,o)))continue;
   spot={x,y,box:r,k}}
  if(!spot)return;

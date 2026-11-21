@@ -2,7 +2,7 @@
 <html lang="en"><head>
 <meta charset="utf-8">
 <meta name="referrer" content="strict-origin-when-cross-origin">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=1024">
 <title>Congratulations ♡</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
@@ -79,10 +79,16 @@ body{padding-bottom:110px}
 .reveal small{font:500 12px "JetBrains Mono",monospace;color:var(--pink)}
 .out .sig.shown{animation:popin .5s cubic-bezier(.3,1.6,.5,1)}
 @keyframes popin{from{transform:scale(.4);opacity:0}}
+.phone .gate button{font-size:46px;padding:34px 64px;gap:22px;border-width:5px}
+.phone .gate button svg{width:64px;height:58px}
+.phone .gate small{font-size:28px;margin-top:22px}
+.phone #ytwrap{transform:scale(1.9);transform-origin:left bottom}
+.phone .stage{zoom:1.35}
 </style></head><body>
 <div id="ytwrap"><div class="yf"><div id="ytp"></div></div><p>♪ Just The Way You Are<br><span>violin cover by Daniel Jang</span></p></div>
 <div id="sky" aria-hidden="true"></div>
 <div id="mem" aria-hidden="true"></div>
+<script>if(Math.min(screen.width,screen.height)<700)document.documentElement.classList.add("phone")</script>
 <div class="gate" id="gate"><div><button id="open" type="button"><svg width="34" height="31" viewBox="0 0 70 64"><path d="M35 58 C14 44 4 32 4 19 C4 9 12 3 20 3 C27 3 32 8 35 14 C38 8 43 3 50 3 C58 3 66 9 66 19 C66 32 56 44 35 58Z" fill="#ff8fb8" stroke="#4b3a63" stroke-width="5" stroke-linejoin="round"/></svg><span id="openTxt">Open your card</span></button><small>sound on ♪ violin: Daniel Jang</small></div></div>
 <main class="stage">
   <svg class="star" viewBox="0 0 300 300" aria-hidden="true">

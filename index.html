@@ -143,19 +143,33 @@ async function play(){
  ret.classList.add('on');done.classList.add('on');burst(22);startMemories();
 }
 
-/* memories: photos + clip pop up at random spots */
+/* memories: photos + clip pop up scattered, never overlapping each other (or the card on wide screens) */
 const RATIO={"p1": 0.75, "p2": 1.328, "p3": 0.667, "p4": 1.333, "p5": 0.75, "p7": 0.75, "p8": 0.786, "p9": 0.75, "p10": 0.45, "p11": 0.75, "p12": 1.333, "clip": 0.562};const MEM=Object.keys(RATIO);
-const mem=document.getElementById('mem');let memQ=[],memOn=false,live=0;
+const mem=document.getElementById('mem');let memQ=[],memOn=false;const boxes=new Set();
 function nextMem(){if(!memQ.length){memQ=MEM.slice().sort(()=>Math.random()-.5)}return memQ.pop()}
-function popMem(){if(live>=2)return;const k=nextMem(),isV=k==='clip';const d=document.createElement('div');d.className='pol'+(isV?' vid':'');
- d.style.setProperty('--r',(Math.random()*14-7).toFixed(1)+'deg');
- d.innerHTML=(isV?'<video src="media/clip.mp4" poster="media/clip.jpg" muted autoplay loop playsinline style="aspect-ratio:1/${RATIO.clip}"></video>':`<img src="media/${k}.jpg" alt="" style="aspect-ratio:1/${RATIO[k]}">`)+`<i><svg viewBox="0 0 70 64"><path d="${H}" fill="#ff8fb8" stroke="#4b3a63" stroke-width="6"/></svg></i>`;
- const vw=innerWidth,vh=innerHeight,rt=RATIO[k],wide=rt<1,w=wide?Math.min(320,vw*.7):Math.min(210,vw*.42),h=w*rt+40;d.style.width=w+'px';
- let x;const side=Math.random()<.5;if(vw>1100){const gap=(vw-660)/2;x=side?Math.random()*Math.max(10,gap-w-10):vw-gap+10+Math.random()*Math.max(10,gap-w-20)}else{x=Math.random()*(vw-w-10)+5}
- const pad=18;x=Math.min(Math.max(pad,x),vw-w-pad-8);d.style.left=x+'px';d.style.top=Math.min(Math.max(pad,Math.random()*(vh-h-2*pad)+pad),Math.max(pad,vh-h-pad))+'px';
- mem.appendChild(d);live++;requestAnimationFrame(()=>requestAnimationFrame(()=>d.classList.add('in')));
- setTimeout(()=>{d.classList.add('out');setTimeout(()=>{d.remove();live--},550)},isV?8000:3800)}
-function startMemories(){if(memOn)return;memOn=true;popMem();setInterval(popMem,2300)}
+const hit=(p,q)=>p.l<q.r&&p.r>q.l&&p.t<q.b&&p.b>q.t;
+function popMem(){
+ const vw=innerWidth,vh=innerHeight,small=vw<700,maxLive=small?2:vw<1200?3:5;
+ if(boxes.size>=maxLive)return;
+ const used=new Set([...boxes].map(b=>b.k));let k=nextMem(),tries=0;while(used.has(k)&&tries++<MEM.length)k=nextMem();
+ const isV=k==='clip',rt=RATIO[k],wide=rt<1;
+ const w=small?(wide?Math.min(230,vw*.6):Math.min(150,vw*.4)):(wide?Math.min(280,vw*.24):Math.min(185,vw*.16));
+ const h=w*rt+42,m=Math.max(w,h)*.08+14,pad=14;
+ const st=document.querySelector('.stage').getBoundingClientRect(),card={l:st.left-20,r:st.right+24,t:st.top-120,b:st.bottom+20};
+ let spot=null;
+ for(let i=0;i<60&&!spot;i++){
+  const x=pad+Math.random()*Math.max(1,vw-w-2*pad-8),y=pad+Math.random()*Math.max(1,vh-h-2*pad);
+  const r={l:x-m,r:x+w+m,t:y-m,b:y+h+m};
+  if(!small&&hit(r,card))continue;
+  if([...boxes].some(o=>hit(r,o)))continue;
+  spot={x,y,box:r,k}}
+ if(!spot)return;
+ const d=document.createElement('div');d.className='pol'+(isV?' vid':'');
+ d.style.setProperty('--r',(Math.random()*12-6).toFixed(1)+'deg');d.style.width=w+'px';d.style.left=spot.x+'px';d.style.top=spot.y+'px';
+ d.innerHTML=(isV?`<video src="media/clip.mp4" poster="media/clip.jpg" muted autoplay loop playsinline style="aspect-ratio:1/${rt}"></video>`:`<img src="media/${k}.jpg" alt="" style="aspect-ratio:1/${rt}">`)+`<i><svg viewBox="0 0 70 64"><path d="${H}" fill="#ff8fb8" stroke="#4b3a63" stroke-width="6"/></svg></i>`;
+ mem.appendChild(d);boxes.add(spot.box);requestAnimationFrame(()=>requestAnimationFrame(()=>d.classList.add('in')));
+ setTimeout(()=>{d.classList.add('out');setTimeout(()=>{d.remove();boxes.delete(spot.box)},550)},isV?8500:4200+Math.random()*1500)}
+function startMemories(){if(memOn)return;memOn=true;popMem();setInterval(popMem,900)}
 const sky=document.getElementById('sky');const cols=['#ff8fb8','#c9b3ff','#ffd166','#8fdcb0','#7ec4f5'];
 function burst(n){if(reduce)return;for(let i=0;i<n;i++){const d=document.createElement('div');d.className='fh';
  const sz=18+Math.random()*26;d.style.left=Math.random()*100+'vw';d.style.width=sz+'px';d.style.setProperty('--r',(Math.random()*80-40)+'deg');
